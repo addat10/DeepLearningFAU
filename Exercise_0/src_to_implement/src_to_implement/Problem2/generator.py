@@ -4,6 +4,7 @@ import scipy.misc
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # I added the following libraries
 import os
 
@@ -32,22 +33,25 @@ class ImageGenerator:
         self.rot=rotation
         self.mir=mirroring
         self.shuff=shuffle
+        # Load Label Data
+        f = open(self.label_path, 'r')
+        labels = json.load(f)
         # Load Image Data
-        i = 0
         images = []
-        for j in range(0,100):
+        labels1=[]
+        indices=np.arange(0,100)
+        if self.shuff: np.random.shuffle(indices)
+        for j in indices:
             filename = str(j) + '.npy'
             path = file_path + '\\' + filename
             image = np.load(path)
             images.append(image)
-            i = i + 1
+            labels1.append(labels[str(j)])
         print("Image files loaded")
-        # Load Label Data
-        f = open(self.label_path, 'r')
-        labels = json.load(f)
+
         self.images=images
-        self.labels=labels
-        self.datasize=i
+        self.labels=labels1
+        self.datasize=100
         self.run_id=0
 
 
@@ -59,16 +63,35 @@ class ImageGenerator:
         #TODO: implement next method
         batch_im = []
         batch_lab =[]
+        self.run_id = np.remainder(self.run_id, 99)
+
         for i in range(self.run_id, self.run_id+self.bs):
-            batch_im.append(self.images[i])
-            batch_lab.append(self.labels[str(i)])
+            k = np.remainder(i, 100)
+            next_im=self.images[k]
+            next_im=self.augment(next_im)
+            batch_im.append(next_im)
+            batch_lab.append(self.labels[k])
         self.run_id = self.run_id+self.bs
+
         return np.array(batch_im), np.array(batch_lab)
 
     def augment(self,img):
         # this function takes a single image as an input and performs a random transformation
         # (mirroring and/or rotation) on it and outputs the transformed image
         #TODO: implement augmentation function
+        if self.mir:
+            if np.random.rand() < 0.5:
+                mirr_axis = 0
+                if np.random.rand() < 0.5: mirr_axis = 1
+                img = np.flip(img, axis=mirr_axis)
+        if self.rot:
+            if np.random.rand() < 0.5:
+                rot_times = 1
+                if np.random.rand() > 0.33 and np.random.rand() < 0.66:
+                    rot_times = 2
+                if np.random.rand() > 0.66:
+                    rot_times = 3
+                img = np.rot90(img, rot_times)
 
         return img
 

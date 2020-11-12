@@ -12,5 +12,6 @@ filename=str(j)+'.npy'
 path = file_path + '\\' + filename
 image = np.load(path)
 
-plt.imshow(image, cmap='gray')
+image_flipped=np.flip(image,axis=1)
+plt.imshow(image_flipped, cmap='gray')
 plt.show()
