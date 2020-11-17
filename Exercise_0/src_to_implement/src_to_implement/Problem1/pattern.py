@@ -16,7 +16,8 @@ class Checker():
         #self.output[IDX.astype(bool)]=1  # For looking at the vertical patches indices
         #self.output[IDY.astype(bool)]=1  # For looking at the horizontal patches indices
         self.output[ID.astype(bool)] = 1  # The correct output. Set the value at correct indices to 1
-        return self.output
+        output = self.output.copy()
+        return output
     def show(self):
         plt.imshow(self.output,cmap = 'gray')
         plt.show()  # To hold the image
@@ -26,7 +27,7 @@ class Circle():
     def __init__(self,resolution,radius,center):
         self.res=resolution         # No of pixels in both directions
         self.rad=radius             # Radius of the Circle
-        self.cen=center             # center of the circle
+        self.cen=np.array(center)   # center of the circle
         self.output = np.zeros((self.res, self.res))  # Initialize output
         print("Creating an object instance of Circle")
     def draw(self):
@@ -34,7 +35,8 @@ class Circle():
         start_id=self.cen-self.rad
         end_id=self.cen+self.rad
         self.output[start_id[0]:end_id[0]+1,start_id[1]:end_id[1]+1]=self.draw_inscribed_circle()
-        return self.output
+        output=self.output.copy()
+        return output
     def show(self):
         plt.imshow(self.output,cmap = 'gray')
         plt.show()  # To hold the image
@@ -45,7 +47,7 @@ class Circle():
         x=np.arange(1,n+1)
         x_min_cen_squared=np.square((x-cen))
         Z=np.reshape(x_min_cen_squared,(n,1))+np.reshape(x_min_cen_squared,(1,n))
-        M[Z>np.square(self.rad)]=0
+        M[Z>=np.square(self.rad)]=0
         return M
 
 class Spectrum():
@@ -91,8 +93,8 @@ class Spectrum():
         self.output[:, :, 0] = Z1
         self.output[:, :, 1] = Z2
         self.output[:,:,2]=Z3
-
-        return self.output
+        output = self.output.copy()
+        return output
     def show(self):
         print("Need to show the spectrum")
         plt.imshow(self.output)

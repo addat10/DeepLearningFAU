@@ -9,6 +9,6 @@ mirroring=False
 shuffle=True
 # Create an object of the class
 Image_set_1=ImageGenerator(file_path, label_path, batch_size, image_size, rotation, mirroring, shuffle)
-for j in range(1,2):
+for j in range(1,10):
     Image_set_1.show()
 
