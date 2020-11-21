@@ -18,7 +18,7 @@ class FullyConnected(object):
         E_prev=np.matmul(error_tensor,np.transpose(self.weights[0:(self.isz),:]))
         self._gradient_weights=np.matmul(np.transpose(self.input_wb),error_tensor)
         if (self.opt_flag!=0):
-            self.weights=self._optimizer.calculate_update(self.weights,self._gradient_weights)
+            self.weights=self._optimizer.calculate_update(self.weights, self._gradient_weights)
         return E_prev
     @property
     def optimizer(self):
@@ -28,7 +28,6 @@ class FullyConnected(object):
     def optimizer(self, opt):
         self.opt_flag = 1
         self._optimizer = opt
-        print('setting opt')
     @property
     def gradient_weights(self):
         return self._gradient_weights
